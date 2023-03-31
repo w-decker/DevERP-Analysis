@@ -1,2 +1,2 @@
 # DevERP-Analysis
-Analysis code used in DevERP Simplified
+Code used to evaluate signal to noise ratio as a metric of data quality in the [DevERP Simplified](https://github.com/w-decker/DevERP-Simplified) project
