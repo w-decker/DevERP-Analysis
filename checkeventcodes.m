@@ -1,7 +1,12 @@
 %% Checks eventcodes and renames file from DevERP dataset
 % Author: Will Decker
 
-datadir = dir('/Volumes/lendlab/projects/DevERP/analysis/data/A00053375/EEG/raw/raw_format/'); % change for each subject
+%% EEGLAB
+
+eeglab nogui %run once
+%%
+cd ''% enter into folder
+datadir = dir(''); % change for each subject
 filedir = fullfile(datadir(1).folder, datadir(1).name);
 datadir = dir(fullfile(filedir, '*.raw'));  % Filter only files with '.raw' extension
 numfiles = numel(datadir);
