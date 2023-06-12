@@ -14,11 +14,11 @@ noise = noiselevel * randn(size(time)); % randomly generate minimal noise along 
 ampl = interp1(randn(p,1)*2, linspace(1,p,n));
 baseline = ampl + noise;
 
-% plot baseline
-figure(1), clf
-plot(time, baseline, 'r');
-xlabel('Time (s)'), ylabel('amp. (a.u.)')
-zoom on
+% % plot baseline
+% figure(1), clf
+% plot(time, baseline, 'r');
+% xlabel('Time (s)'), ylabel('amp. (a.u.)')
+% zoom on
 
 % signal
 % samplerate is the same
@@ -29,12 +29,12 @@ noiselevel2 = 3; % measured in standard deviations
 noise2 = noiselevel2 * randn(size(time2)); % randomly generate noise along signal
 ampl2 = interp1(randn(p2,1)*25, linspace(1,p2,n2)); % ampl modulator
 signal = ampl2 + noise2;
-
-% plot signal
-figure(2), clf
-plot(time2, signal, 'g');
-xlabel('Time (s)'), ylabel('amp. (a.u.)')
-zoom on
+% 
+% % plot signal
+% figure(2), clf
+% plot(time2, signal, 'g');
+% xlabel('Time (s)'), ylabel('amp. (a.u.)')
+% zoom on
 
 % entire signal
 final = [baseline, signal];
