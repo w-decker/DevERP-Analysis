@@ -1,4 +1,4 @@
-function [tmaxoutput] = tmaxoutputstruct(varargin)
+function [tmaxstruct] = tmaxoutputstruct(varargin)
 %TMAXOUTPUTSTRUCT Creates a structure for calcsigparams() to read from
 %tmaxGND() .txt output.
 %   varargin -- input the .txt files you wish to read in. Can be variables or
@@ -60,8 +60,4 @@ elseif dir ~= true
 end
 
 % end of function
-end
-
-
-
 end
