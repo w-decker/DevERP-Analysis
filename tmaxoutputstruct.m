@@ -6,19 +6,19 @@ function [tmaxstruct] = tmaxoutputstruct(varargin)
 % 
 %   OPTIONAL INPUTS
 %   'dir' -- ('yes|no') default: 'no' if you are reading in the
+%
+% Example: myStruct = tmaxoutputstruct('/path/to/dir', 'dir', 'yes');
 
 %% begin
-% get length of varargin for later
-lengvars = length(varargin);
 
 % check if user input 'dir' as a parameter and return its position
 isdir = false; % default
-for i=1:lengvars
-    if varargin{i} == 'dir'
-        isdir = true;
-    end
+
+if varargin{3} == 'yes'
+    isdir = true;
 end
-isdir = {isdir};
+
+isdir = (isdir);
 
 % if running function using a dir, 
 if isdir == true
