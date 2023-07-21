@@ -1,7 +1,7 @@
 function [smeOutput] = analyzeSME(smeTable,filetype,timewindow)
 %ANALYZESME Average SME across channels within a specified time window
 %   smeTable (str or var) path to .mat or .xls output file created during SME calculation
-%   timewindow (vector of ints) Time window, must be whole numbers
+%   timewindow (vector of ints) Time window, must be whole numbers in steps of 100.
 
 % parse inputs
 p = inputParser;
