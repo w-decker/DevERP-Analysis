@@ -43,6 +43,7 @@ if todo == 1
         data2analyze = fulldata(2:end, indx1:indx2);
         smeavg = mean(mean(data2analyze));
         sprintf('The mean of the time window {p.Results.timewindow} is {smeavg}.')
+        smeOutput = smeavg;
     end
 
 % TODO: add xls version
