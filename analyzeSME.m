@@ -3,28 +3,24 @@ function [smeOutput] = analyzeSME(smeTable,filetype,timewindow)
 %   smeTable (str or var) path to .mat or .xls output file created during SME calculation
 %   timewindow (vector of ints) Time window, must be whole numbers
 
+% parse inputs
 p = inputParser;
-p.FunctionName('analyzeSME')
+p.FunctionName = inputname(1);
 p.CaseSensitive = false;
-p.addRequired('smeTable')
-p.addParamValue('smeTable', @ischar)
-p.addRequired('filetype')
-p.addParamValue('filetype', @ischar)
-p.addRequired('timewindow')
-t1 = timewindow(1);
-t2 = timewindow(2);
-p.addParamValue('timewindow', [t1 t2], @isnumeric);
-p.parse(p, smeTable, filetype, timewindow)
+p.addRequired('smeTable', @ischar)
+p.addRequired('filetype', @ischar)
+p.addRequired('timewindow', @(x) validateattributes(x, {'numeric'}, {'vector', 'integer'}));
+p.parse(smeTable, filetype, timewindow)
 
-
+% check the filetype and assign analysis based on that 
 df = [];
 todo = 1;
-if p.Results.filetype == 'mat'
+if strcmpi(p.Results.filetype, 'mat')
     df = load(p.Results.smeTable, '-mat');
     numbins = size(df.dataquality.data);
     numbins = numbins(3);
     todo = 1;   
-elseif p.results.filetype == 'xls'
+elseif strcmpi(p.results.filetype, 'xls')
     xlsdf = readtable(p.Results.smeTable);
     sheets = cell2mat(table2cell(xlsdf(:,3)));
     numsheets = sum(sheets ~= '"');
@@ -32,18 +28,29 @@ elseif p.results.filetype == 'xls'
     todo = 2;
 end
 
+% analyze .mat file data
+smeOutput = struct(); % create output struct
 if todo == 1
+    % get times
     timecols = df.dataquality.times(:, 1).';
-    fulldata = df.dataquality.data;
-    indx1 = find(timecols == t1);
-    indx2 = find(timecols == t2);
-
-    smeavg = [];
-    for i = 1:length(fieldnames(newdf))
-        data2analyze = fulldata(2:end, indx1:indx2);
+    indx1 = find(timecols == p.Results.timewindow(1));
+    indx2 = find(timecols == p.Results.timewindow(2));
+        if isempty(indx1) || isempty(indx2)
+            error('Your time windows are incorrect. Time windows must be given in steps of 100. Example: [0 100] or [200 500].')
+        end
+    
+    % calculate mean and std and output to struct
+    for i = 1:numbins
+        smeData = [timecols; df.dataquality.data(:, :, (i))];
+        data2analyze = smeData(2:end, indx1:indx2);
         smeavg = mean(mean(data2analyze));
-        sprintf('The mean of the time window {p.Results.timewindow} is {smeavg}.')
-        smeOutput = smeavg;
+        smestd = std(mean(data2analyze));
+        fprintf('Within the time window %d-%d in bin %d the mean is %f the std is %f.\n', timewindow(1), timewindow(2), i, smeavg, smestd);
+
+        % add to smeOutput
+       smeOutput(i).bin = i;
+       smeOutput(i).mean = smeavg;
+       smeOutput(i).std = smestd;
     end
 
 % TODO: add xls version
