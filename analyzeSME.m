@@ -34,52 +34,19 @@ end
 
 if todo == 1
     timecols = df.dataquality.times(:, 1).';
-    data2analyze = df.dataquality.data;
-    newdf = struct;
-    for i = 1:numbins
-        newdf(i).string({i}) = [timecols; df.dataquality.data(:, :, 1)];
+    fulldata = df.dataquality.data;
+    indx1 = find(timecols == t1);
+    indx2 = find(timecols == t2);
+
+    smeavg = [];
+    for i = 1:length(fieldnames(newdf))
+        data2analyze = fulldata(2:end, indx1:indx2);
+        smeavg = mean(mean(data2analyze));
+        sprintf('The mean of the time window {p.Results.timewindow} is {smeavg}.')
     end
-    
-    % begin analysis
-    
-    smeOutput = [];
-    
-    for i = 1:numbins
+
+% TODO: add xls version
         
-       
-z = cell(num2str(timecols));
-
-
-
-for i = 1:length(timecols)
-    timecols(i) = num2str(timecols(1)))
-    
 end
-
-% dd = array2table(data2analyze(:, :, 1), 'VariableNames', t.');
-% 
-% t = cellstr(num2str(timecols.'))
-% t.'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 end
