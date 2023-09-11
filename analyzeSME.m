@@ -1,4 +1,4 @@
-function [smeOutput] = analyzeSME(smeTable,timewindow)
+function [smeOutput] = analyzeSME(smeTable,filetype,timewindow, varargin)
 %ANALYZESME Average SME across channels within a specified time window
 %   smeTable (str or var) path to .mat or .xls output file created during SME calculation
 %   timewindow (vector of ints) Time window, must be whole numbers in steps of 100.
@@ -8,20 +8,27 @@ p = inputParser;
 p.FunctionName = inputname(1);
 p.CaseSensitive = false;
 p.addRequired('smeTable', @ischar)
-p.addRequired('timewindow', @(x) validateattributes(x, {'numeric', 'vector', 'integer'}, {'size', [1, 2]}));
-p.parse(smeTable,timewindow)
+p.addRequired('filetype', @ischar)
+p.addRequired('timewindow', @(x) validateattributes(x, {'numeric'}, {'vector', 'integer'}));
+p.addOptional('gui', @islogical)
+p.parse(smeTable, filetype, timewindow, gui)
 
 % check the filetype and assign analysis based on that 
 df = [];
-todo = 1;
-filextension = string(split(p.Results.smeTable, '.'))'; %checks file type
 
-if filextension(1, 2) == 'mat'
+
+% set to-do
+if p.Results.gui == true 
+    todo = 0;
+else
+    todo = [];
+
+if strcmpi(p.Results.filetype, 'mat')
     df = load(p.Results.smeTable, '-mat');
     numbins = size(df.dataquality.data);
     numbins = numbins(3);
     todo = 1;   
-elseif filextension(1, 2) == 'xls'
+elseif strcmpi(p.results.filetype, 'xls')
     xlsdf = readtable(p.Results.smeTable);
     sheets = cell2mat(table2cell(xlsdf(:,3)));
     numsheets = sum(sheets ~= '"');
@@ -31,6 +38,20 @@ end
 
 % analyze .mat file data
 smeOutput = struct(); % create output struct
+
+if todo == 0
+    smefiles = uigetfile('*.*',  'All Files (*.*)','MultiSelect','on');
+    
+    
+end
+
+
+
+
+
+
+
+
 if todo == 1
     % get times
     timecols = df.dataquality.times(:, 1).';
@@ -59,3 +80,5 @@ if todo == 1
 end
 
 end
+
+
