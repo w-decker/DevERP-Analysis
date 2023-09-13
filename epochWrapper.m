@@ -5,7 +5,8 @@ function [EEG, com, ALLEEG, CURRENTSET] = epochWrapper(EEG, ALLEEG, CURRENTSET, 
 % ---------
 % Additional optional args
 % ---------
-% operation -- (char) specify the type of signal processing
+% operation -- (char) specify the type of signal processing ('filter',
+% 'linenoise', 'channelrej', 'asr', 'ic')s
 % operation that was conducted on the to-be epoched data
 % parameterStrings -- (array or cell of string or char) the different parameter strings used
 % to name different iterations of the preprocessing step.
@@ -31,8 +32,10 @@ elseif strcmp(epochtype, 'linenoise')
     epochLineNoise(EEG, subject_list, workdir, txtdir, erpdir)
 elseif strcmp(epochtype, 'channelrej')
     epochLineNoise(EEG, subject_list, workdir, txtdir, erpdir)
-elseif strcmp(epochtype, 'ASR')
+elseif strcmp(epochtype, 'asr')
     epochLineNoise(EEG, subject_list, workdir, txtdir, erpdir)
+elseif strcmp(epochtype, 'ic')
+    epochIC(EEG, subject_list, workdir, txtdir, erpdir)
 end
 
 

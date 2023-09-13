@@ -1,4 +1,7 @@
-function [EEG, com] = epochLineNoise(EEG, subject_list, workdir, txtdir, erpdir)
+function [EEG, com, ALLEEG, CURRENTSET] = epochLineNoise(EEG,ALLEEG, CURRENTSET, subject_list, workdir, txtdir, erpdir)
+
+EEG = []
+com= ''
 
 %%%% DO NOT CHANGE %%%%
 linenoise_str = {'_notch', '_IIR', '_cleanline'};
@@ -12,7 +15,6 @@ for i = 1:numparams
     for s=1:numsubjects %change number of subjects as needed
         
                  eeglab nogui
-
                  subject = subject_list{s};
             
             % Create eventlist, apply binlist, extract epochs
@@ -41,7 +43,6 @@ for i = 1:numparams
     for s=1:numsubjects
     
          eeglab nogui
-    
          subject = subject_list{s};
     
         EEG = pop_loadset('filename',[subject linenoise_str{i} '_epoch_ar.set'],'filepath',erpdir);
@@ -51,23 +52,6 @@ for i = 1:numparams
     
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 end
