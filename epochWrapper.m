@@ -29,13 +29,13 @@ erpdir=erpdir;
 if strcmp(epochtype, 'filter')
     epochFilter(EEG, ALLEEG, CURRENTSET, subject_list, workdir, txtdir, erpdir)
 elseif strcmp(epochtype, 'linenoise')
-    epochLineNoise(EEG, subject_list, workdir, txtdir, erpdir)
+    epochLineNoise(EEG, ALLEEG, CURRENTSET,subject_list, workdir, txtdir, erpdir)
 elseif strcmp(epochtype, 'channelrej')
-    epochLineNoise(EEG, subject_list, workdir, txtdir, erpdir)
+    epochChannelRej(EEG, ALLEEG, CURRENTSET, subject_list, workdir, txtdir, erpdir)
 elseif strcmp(epochtype, 'asr')
-    epochLineNoise(EEG, subject_list, workdir, txtdir, erpdir)
+    epochASR(EEG, ALLEEG, CURRENTSET, subject_list, workdir, txtdir, erpdir)
 elseif strcmp(epochtype, 'ic')
-    epochIC(EEG, subject_list, workdir, txtdir, erpdir)
+    epochIC(EEG, ALLEEG, CURRENTSET,subject_list, workdir, txtdir, erpdir)
 end
 
 
