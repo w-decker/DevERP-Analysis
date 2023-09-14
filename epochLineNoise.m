@@ -8,17 +8,21 @@ linenoise_str = {'_notch', '_IIR', '_cleanline'};
 %%%%%%%%%%%%%%%%%%%%%%%
 
 numparams = length(linenoise_str);
-numsubject = length(subject_list);
+numsubjects = length(subject_list);
 
+% 
+% numparams = length(highpass);
+% numsubjects = length(subject_list);
 
 for i = 1:numparams
     for s=1:numsubjects %change number of subjects as needed
         
                  eeglab nogui
+            
                  subject = subject_list{s};
             
             % Create eventlist, apply binlist, extract epochs
-            EEG = pop_loadset('filepath', workdir, 'filename', [subject linenoise_str{i} '.set']);
+            EEG = pop_loadset('filepath', workdir, 'filename', [subject_list{s} linenoise_str{i} '.set']);
             [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
             
             EEG  = pop_creabasiceventlist( EEG , 'AlphanumericCleaning', 'on', 'BoundaryNumeric', { -99 }, 'BoundaryString', { 'boundary' }, ...
