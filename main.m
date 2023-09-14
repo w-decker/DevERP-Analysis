@@ -9,6 +9,7 @@
 
 %% Initialize directories
 
+sys = system('env'); % use if needed
 user = getenv('USER'); % use if needed
 
 rawdir = '/Volumes/lendlab/projects/DevERP/SPR_analysis/rawdir'; % should contain .set files. If not, see 'checkeventcodes.m'
@@ -57,19 +58,19 @@ numparams = length(highpass);
 for i = 1:numparams
     
     eeglab nogui
-    subject = subject_list{s};
 
-    for s = 1:numsubjects
+    for s=1:numsubjects
+        subject = subject_list{s};
 
         % load in datasets
         EEG = pop_loadset([workdir filesep [subject '_chansrm_.set']]);
 
         % filter the data
-        EEG  = pop_basicfilter( EEG,  1:EEG.nbchan , 'Boundary', 'boundary', 'Cutoff', [ highpass(s) 30], ...
+        EEG  = pop_basicfilter( EEG,  1:EEG.nbchan , 'Boundary', 'boundary', 'Cutoff', [ highpass(i) 30], ...
                 'Design', 'butter', 'Filter', 'bandpass', 'Order',4 );
 
         % save dataset
-        EEG = pop_saveset( EEG, [workdir filesep [subject '_highpass_' highpass_str{s} '.set']]);
+        EEG = pop_saveset( EEG, [workdir filesep [subject '_highpass_' highpass_str{i} '.set']]);
     end
 end
 
@@ -399,8 +400,8 @@ EEG = epochWrapper(EEG,ALLEEG, CURRENTSET, 'ic', subject_list, workdir, txtdir, 
 
 %% Make ERP list for IC Label
 
-tstrings = {'_59', '_51', '_79', '_71' };
-erpnames = {'59_erplist.txt', '51_erplist.txt', '79_erplist.txt', '71_erplist.txt'};
+tstrings = {'_59_ic', '_51_ic', '_79_ic', '_71_ic' };
+erpnames = {'59_ic_erplist.txt', '51_ic_erplist.txt', '79_ic_erplist.txt', '71_ic_erplist.txt'};
 
 numparams = length(tstrings);
 numsubjects = length(subject_list);
