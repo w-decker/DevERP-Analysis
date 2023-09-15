@@ -95,7 +95,14 @@ end
 
 %% Analyze SME for filtered data
 
-filter_winner = ''
+% set variables
+erpnames = {'1_erplist.txt', 'pt1_erplist.txt', 'pt01_erplist.txt', 'pt25_erplist.txt', 'pt5_erplist.txt', 'pt75_erplist.txt'};
+strnames = {'1', 'pt1', 'pt01', 'pt25', 'pt5', 'pt75'};
+
+%analyze winner
+analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)
+
+filter_winner = '_highpass_1';
 
 %% Remove Line noise
 
@@ -180,8 +187,13 @@ for j = 1:numparams
 end
 
 %% Analyze SME for line-noise data
+erpnames = {'notch_erplist.txt', 'IIR_erplist.txt', 'cleanline_erplist.txt'};
+strnames = {'_notch', '_IIR', '_cleanline'};
 
-ln_winner = '';
+% get winner
+analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)
+
+ln_winner = '_IIR';
 
 %% Rereference to the Cz
 for s = 1:numsubjects
@@ -193,7 +205,7 @@ for s = 1:numsubjects
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
     EEG = eeg_checkset( EEG );
  
-    EEG = pop_reref( EEG, 129);
+    EEG = pop_reref( EEG, 111);
 
     [ALLEEG, EEG, CURRENTSET] = pop_newset(ALLEEG, EEG, CURRENTSET,'setname',[subject '_reref.set' ],'gui','off'); 
     EEG = pop_saveset( EEG, [subject '_reref.set' ], workdir); 
@@ -224,14 +236,38 @@ for i = 1:numparams
         eeglab nogui
         subject = subject_list{s};
     
+        % load in EEG 
         EEG = pop_loadset('filename',[subject  '_reref.set'],'filepath', workdir);
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
         EEG = eeg_checkset( EEG );
+
+        % make copy
+        EEG_copy = EEG;
+        EEG_data_copy = EEG.data;
         
         % clean_raw_data
-        EEG = clean_rawdata(EEG, 'FlatlineCriterion',5,'ChannelCriterion',params{i} , ...
+        EEG = pop_clean_rawdata(EEG, 'FlatlineCriterion',5,'ChannelCriterion',params{i} , ...
             'LineNoiseCriterion',4,'Highpass','off','BurstCriterion','off','WindowCriterion','off', ...
             'BurstRejection','off','Distance','Euclidian');
+
+        % get removed rows
+        rmrows = [];
+
+        for t = 1:size(EEG_data_copy, 1)
+        % Check if the current row of matrix1 is present in matrix2
+            if ~ismember(EEG_data_copy(t, :), EEG.data, 'rows')
+                rmrows = [rmrows, t];
+            end
+        end
+
+        % reload original set
+        EEG = pop_loadset('filename',[subject  '_reref.set'],'filepath', workdir);
+        [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
+        EEG = eeg_checkset( EEG );
+        EEG = pop_editset(EEG, 'run', [], 'chanlocs', '/Volumes/lendlab/projects/DevERP/analysis/data/GSN-HydroCel-129.sfp');
+
+        % interpolate
+        EEG = pop_interp(EEG, rmrows, 'spherical');
         
         % save
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'savenew', ...
@@ -252,7 +288,7 @@ numparams = length(paramstr);
 numsubjects = length(subject_list);
 
 for j = 1:numparams
-    fileID = fopen(filenames{j}, 'w');
+    fileID = fopen([txtdir filesep erpnames{j}],'w');
 
     for i = 1:numsubjects
         subject = subject_list{i};
@@ -265,7 +301,13 @@ end
 
 %% Analyze SME for clean_rawdata
 
-crd_winner = '';
+strnames = {'_a1', '_a2', '_a3', '_a4', '_a5'};
+erpnames = {'a1_erplist.txt', 'a2_erplist.txt', 'a3_erplist.txt', 'a4_erplist.txt', 'a5_erplist.txt'};
+
+% get winner
+analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)         
+
+%crd_winner = '';
 
 %% Artifact subspace rejection (ASR)
 
