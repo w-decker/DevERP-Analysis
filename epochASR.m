@@ -4,6 +4,15 @@ EEG = []
 com = ''
 
 %%%% DO NOT CHANGE %%%%
+
+% set parameters
+a = linspace(0, 100, 5);
+a1 = 5;
+a2 = a(2);
+a3 = a(3);
+a4 = a(4);
+a5 = a(5);
+
 params = {a1, a2, a3, a4, a5};
 paramstr = {'_a1', '_a2', '_a3', '_a4', '_a5'};
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -22,12 +31,12 @@ for i = 1:numparams
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
         
         EEG  = pop_creabasiceventlist( EEG , 'AlphanumericCleaning', 'on', 'BoundaryNumeric', { -99 }, 'BoundaryString', { 'boundary' }, ...
-            'Eventlist', [txtdir filesep [subject paramstr{i} '_asr_ventlist.txt']]); 
+            'Eventlist', [txtdir filesep [subject paramstr{i} '_asr_eventlist.txt']]); 
         EEG = eeg_checkset( EEG );
         [ALLEEG, EEG, CURRENTSET] = pop_newset(ALLEEG, EEG, CURRENTSET,'gui','off'); 
         
         EEG  = pop_binlister( EEG , 'BDF', [txtdir filesep 'binlist.txt'], 'ExportEL', ...
-            [txtdir filesep [subject paramstr{i} '_asr_inlist.txt']],'ImportEL', ...
+            [txtdir filesep [subject paramstr{i} '_asr_binlist.txt']],'ImportEL', ...
             [txtdir filesep [subject paramstr{i} '_asr_eventlist.txt']], 'IndexEL',  1, 'SendEL2', 'EEG&Text', 'Voutput', 'EEG' );
         [ALLEEG, EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
         
