@@ -307,7 +307,7 @@ erpnames = {'a1_erplist.txt', 'a2_erplist.txt', 'a3_erplist.txt', 'a4_erplist.tx
 % get winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)         
 
-%crd_winner = '';
+crd_winner = '_a1_crd_channels';
 
 %% Artifact subspace rejection (ASR)
 
@@ -352,13 +352,13 @@ EEG = epochWrapper(EEG,ALLEEG, CURRENTSET, 'asr', subject_list, workdir, txtdir,
 %% Make ERP List for ASR
 
 paramstr = {'_a1', '_a2', '_a3', '_a4', '_a5'};
-filenames = {'a1_erplist.txt', 'a2_erplist.txt', 'a3_erplist.txt', 'a4_erplist.txt', 'a5_erplist.txt'};
+filenames = {'a1_asr_erplist.txt', 'a2_asr_erplist.txt', 'a3_asr_erplist.txt', 'a4_asr_erplist.txt', 'a5_asr_erplist.txt'};
 
 numparams = length(paramstr);
 numsubjects = length(subject_list);
 
 for j = 1:numparams
-    fileID = fopen(filenames{j}, 'w');
+    fileID = fopen([txtdir filesep filenames{j}], 'w');
 
     for i = 1:numsubjects
         subject = subject_list{i};
@@ -371,7 +371,14 @@ end
 
 %% Analyze SME for clean_rawdata
 
-asr_winner = '';
+% need
+strnames = {'_a1', '_a2', '_a3', '_a4', '_a5'};
+erpnames = {'a1_asr_erplist.txt', 'a2_asr_erplist.txt', 'a3_asr_erplist.txt', 'a4_asr_erplist.txt', 'a5_asr_erplist.txt'};
+
+% get winner
+analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)   
+
+asr_winner = '_a1_asr';
 
 %% ICA
 
@@ -442,7 +449,7 @@ EEG = epochWrapper(EEG,ALLEEG, CURRENTSET, 'ic', subject_list, workdir, txtdir, 
 
 %% Make ERP list for IC Label
 
-tstrings = {'_59_ic', '_51_ic', '_79_ic', '_71_ic' };
+tstrings = {'_59', '_51', '_79', '_71' };
 erpnames = {'59_ic_erplist.txt', '51_ic_erplist.txt', '79_ic_erplist.txt', '71_ic_erplist.txt'};
 
 numparams = length(tstrings);
@@ -460,6 +467,13 @@ end
 
 %% Analyze SME for IC Label
 
-ic_winner = '';
+% need
+strnames = {'_59', '_51', '_79', '_71' };
+erpnames = {'59_ic_erplist.txt', '51_ic_erplist.txt', '79_ic_erplist.txt', '71_ic_erplist.txt'};
+
+% get winner
+analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)  
+
+ic_winner = '_51';
 
 
