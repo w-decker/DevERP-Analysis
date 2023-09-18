@@ -102,7 +102,7 @@ strnames = {'1', 'pt1', 'pt01', 'pt25', 'pt5', 'pt75'};
 %analyze winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)
 
-filter_winner = '_highpass_1';
+filter_winner = ['_highpass_' winner2];
 
 %% Remove Line noise
 
@@ -127,8 +127,8 @@ end
 
 % IIR
 
-locutoff = 52;
-hicutoff = 48;
+locutoff = 48;
+hicutoff = 52;
 
 for s=1:numsubjects 
 
@@ -139,8 +139,7 @@ for s=1:numsubjects
     EEG = pop_loadset ([subject filter_winner '.set'],workdir);
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
 
-    EEG = pop_iirfilt( EEG, 48, 52);
-
+    EEG = pop_iirfilt( EEG, locutoff, hicutoff, [], 1, 0);
     [ALLEEG, EEG, CURRENTSET] = pop_newset(ALLEEG, EEG, CURRENTSET,'setname',[subject '_IIR' ],'gui','off'); 
     EEG = pop_saveset( EEG, [subject '_IIR.set'], workdir); 
 end
@@ -193,7 +192,7 @@ strnames = {'_notch', '_IIR', '_cleanline'};
 % get winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)
 
-ln_winner = '_IIR';
+ln_winner = winner2;
 
 %% Rereference to the Cz
 for s = 1:numsubjects
@@ -307,7 +306,7 @@ erpnames = {'a1_erplist.txt', 'a2_erplist.txt', 'a3_erplist.txt', 'a4_erplist.tx
 % get winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)         
 
-crd_winner = '_a1_crd_channels';
+crd_winner = [winner2 '_crd_channels'];
 
 %% Artifact subspace rejection (ASR)
 
@@ -378,7 +377,7 @@ erpnames = {'a1_asr_erplist.txt', 'a2_asr_erplist.txt', 'a3_asr_erplist.txt', 'a
 % get winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)   
 
-asr_winner = '_a1_asr';
+asr_winner = [winner2 '_asr'];
 
 %% ICA
 
@@ -474,6 +473,6 @@ erpnames = {'59_ic_erplist.txt', '51_ic_erplist.txt', '79_ic_erplist.txt', '71_i
 % get winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)  
 
-ic_winner = '_51';
+ic_winner = winner2 ;
 
 
