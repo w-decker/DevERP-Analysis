@@ -24,11 +24,6 @@ numerpnames = length(erpnames);
 SME = struct();
 target = timerange;
 
-if ERP.nchan == 111
-    nchan = 110;
-else 
-    nchan = ERP.nchan;
-
 
 % create grandaverage
 for i=1:numerpnames
@@ -37,6 +32,11 @@ for i=1:numerpnames
      'erpname', [strnames{i} 'grandaverage'], 'filename', [strnames{i} 'grandaverage.erp'] , 'filepath', erpdir,...
      'Warning', 'off');
 end
+
+if ERP.nchan == 111
+    nchan = 110;
+else 
+    nchan = ERP.nchan;
 
 % get winner
 for i=1:numerpnames
