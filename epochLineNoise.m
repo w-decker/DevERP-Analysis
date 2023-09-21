@@ -52,7 +52,7 @@ for i = 1:numparams
         EEG = pop_loadset('filename',[subject linenoise_str{i} '_epoch_ar.set'],'filepath',erpdir);
         ERP = pop_averager( EEG , 'Criterion', 'good', 'DQ_flag', 1, 'ExcludeBoundary', 'on', 'SEM', 'on' );
         ERP = pop_savemyerp(ERP, 'erpname',[subject linenoise_str{i} '.erp'], 'filename', [subject linenoise_str{i} '.erp'], ...
-            'filepath', erpdir, 'Warning', 'on');
+            'filepath', erpdir, 'Warning', 'off');
     
     end
 end
