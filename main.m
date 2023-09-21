@@ -102,13 +102,15 @@ strnames = {'1', 'pt1', 'pt01', 'pt25', 'pt5', 'pt75'};
 %analyze winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)
 
-filter_winner = ['_highpass_' winner2];
+unilat='1';
+
+filter_winner = ['_highpass_' unilat];
 
 %% Remove Line noise
 
 numsubjects = length(subject_list);
 
-% notch
+%% notch
 for s=1:numsubjects 
 
     eeglab nogui
@@ -119,13 +121,13 @@ for s=1:numsubjects
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
 
     % remove line noise
-    EEG  = pop_eegfiltnew( EEG, 'locutoff', 52, 'hicutoff', 48);
+    EEG = pop_eegfiltnew(EEG, 'locutoff',48,'hicutoff',52,'revfilt',1);
 
     [ALLEEG, EEG, CURRENTSET] = pop_newset(ALLEEG, EEG, CURRENTSET,'setname',[subject '_notch'],'gui','off'); 
     EEG = pop_saveset( EEG, [subject '_notch.set'], workdir); 
 end
 
-% IIR
+%% IIR
 
 locutoff = 48;
 hicutoff = 52;
@@ -144,7 +146,7 @@ for s=1:numsubjects
     EEG = pop_saveset( EEG, [subject '_IIR.set'], workdir); 
 end
 
-% CleanLine
+%% CleanLine
 
 nchan = [1:EEG.nbchan];
 
@@ -191,6 +193,8 @@ strnames = {'_notch', '_IIR', '_cleanline'};
 
 % get winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)
+
+%%
 
 ln_winner = winner2;
 
@@ -274,14 +278,14 @@ for i = 1:numparams
     end
 end
 
-%% Epoch clean_rawdata
+ %% Epoch clean_rawdata
 
 EEG = epochWrapper(EEG,ALLEEG, CURRENTSET, 'channelrej', subject_list, workdir, txtdir, erpdir);
 
 %% Make ERP List for clean_rawdata
 
 paramstr = {'_a1', '_a2', '_a3', '_a4', '_a5'};
-filenames = {'a1_erplist.txt', 'a2_erplist.txt', 'a3_erplist.txt', 'a4_erplist.txt', 'a5_erplist.txt'};
+erpnames = {'a1_crd_erplist.txt', 'a2_crd_erplist.txt', 'a3_crd_erplist.txt', 'a4_crd_erplist.txt', 'a5_crd_erplist.txt'};
 
 numparams = length(paramstr);
 numsubjects = length(subject_list);
@@ -300,13 +304,13 @@ end
 
 %% Analyze SME for clean_rawdata
 
-strnames = {'_a1', '_a2', '_a3', '_a4', '_a5'};
-erpnames = {'a1_erplist.txt', 'a2_erplist.txt', 'a3_erplist.txt', 'a4_erplist.txt', 'a5_erplist.txt'};
+strnames = {'_a1_crd', '_a2_crd', '_a3_crd', '_a4_crd', '_a5_crd'};
+erpnames = {'a1_crd_erplist.txt', 'a2_crd_erplist.txt', 'a3_crd_erplist.txt', 'a4_crd_erplist.txt', 'a5_crd_erplist.txt'};
 
 % get winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)         
 
-crd_winner = [winner2 '_crd_channels'];
+crd_winner = [winner2 '_channels'];
 
 %% Artifact subspace rejection (ASR)
 
@@ -475,4 +479,25 @@ analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)
 
 ic_winner = winner2 ;
 
+%% tmax
 
+% read in data
+data = readtext([txtdir filesep '51_ic_erplist.txt']);
+
+% make GND variable
+GND = erplab2GND(data, 'out_fname', [erpdir filesep 'tmax.GND']); 
+
+% do tmax
+GND=tmaxGND(GND,1,'time_wind',[200 900],'output_file',[txtdir filesep 'tmax.txt']);
+
+%% Make plots
+
+tmax = readtext([txtdir filesep 'tmax.txt']);
+save([txtdir filesep 'tmax.mat'], '-mat');
+
+ 
+heatmap(tmax)
+title('Significant channels')
+xlabel('time (ms)')
+ylabel('Channels')
+colormap summer
