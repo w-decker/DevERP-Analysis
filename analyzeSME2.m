@@ -37,6 +37,7 @@ if ERP.nchan == 111
     nchan = 110;
 else 
     nchan = ERP.nchan;
+end
 
 % get winner
 for i=1:numerpnames
@@ -49,9 +50,9 @@ for i=1:numerpnames
     b1 = b{1, 1}(:, :, 1);
     b2 = b{1, 1}(:, :, 2);
     max1 = mean(max(b1(:, 7:9)));
-    min1 = mean(min(b1(1:nchan, 7:9)));
-    max2 = mean(max(b2(1:nchan, 7:9)));
-    min2 = mean(min(b2(1:nchan, 7:9)));
+    min1 = mean(min(b1(1:110, 7:9)));
+    max2 = mean(max(b2(1:110, 7:9)));
+    min2 = mean(min(b2(1:110, 7:9)));
     max_hat = (max1 + max2)/ sqrt(2); %divide my sqrt of number of bins...it is hard coded here for this project
     min_hat = (min1 + min2)/sqrt(2);
     win = abs(max_hat - min_hat);
@@ -62,14 +63,12 @@ for i=1:numerpnames
 
 end
 
-
-% add SME to workspace
-assignin('base', 'SME', SME)
-
 [t,l] = min([SME.val]);
 winner = SME(l).type;
 sprintf('The winner of this operation is %s', winner)
 
+% add SME to workspace
+assignin('base', 'SME', SME)
 
 % add winner2 to workspace for main.m to use
 winner2 = winner;
