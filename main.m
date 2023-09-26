@@ -479,7 +479,7 @@ analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)
 
 ic_winner = winner2 ;
 
-%% tmax
+%% Getting significant ERPs with tmax()
 
 % read in data
 data = readtext([txtdir filesep '51_ic_erplist.txt']);
