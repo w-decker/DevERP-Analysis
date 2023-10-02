@@ -12,10 +12,10 @@
 sys = system('env'); % use if needed
 user = getenv('USER'); % use if needed
 
-rawdir = '/Volumes/lendlab/projects/DevERP/SPR_analysis/rawdir'; % should contain .set files. If not, see 'checkeventcodes.m'
-workdir = '/Volumes/lendlab/projects/DevERP/SPR_analysis/workdir';
-txtdir = '/Volumes/lendlab/projects/DevERP/SPR_analysis/txtdir';
-erpdir = '/Volumes/lendlab/projects/DevERP/SPR_analysis/erpdir';
+rawdir = '/Volumes/lendlab/projects/DevERP/analysis/symbol_search_SME/rawdir'; % should contain .set files. If not, see 'checkeventcodes.m'
+workdir = '/Volumes/lendlab/projects/DevERP/analysis/symbol_search_SME/workdir';
+txtdir = '/Volumes/lendlab/projects/DevERP/analysis/symbol_search_SME/txtdir';
+erpdir = '/Volumes/lendlab/projects/DevERP/analysis/symbol_search_SME/erpdir';
 
 %% Load in subject list
 % See https://github.com/w-decker/DevERP-Simplified/wiki/Additional-Resources for creating this subject lists
@@ -23,7 +23,15 @@ erpdir = '/Volumes/lendlab/projects/DevERP/SPR_analysis/erpdir';
 [N, T, R] = xlsread([txtdir filesep 'subjectlist.xlsx']);
 subject_list = cellfun(@(x) string(x), T(:, 2)); % changes values in cell to strings
 
-%% Remove unnecessary channels
+%% Rename files
+
+for i=1:length(T)
+    eeglab nogui
+    EEG = pop_loadset([T{i, 1} '.set'], rawdir);
+    EEG = pop_saveset(EEG, [workdir filesep [T{i, 2} '.set']]);
+end
+
+ %% Remove unnecessary channels
 
 chans2remove = [8, 14, 17, 21, 25, 48, 43, 68, 73, 81, 88, 94, 119, 120, 125, 126, 127, 128].'; % channels to remove a la Langer et al. (2017)
 chanlist = [1:129].'; % total number of channels
@@ -38,7 +46,7 @@ for i=1:numsubjects
     eeglab nogui
 
     % load in data
-    EEG = pop_loadset([subject '.set'],rawdir);
+    EEG = pop_loadset([subject '.set'],workdir);
 
     % remove channels
     EEG.data(chans2remove, :) = [];
@@ -102,9 +110,9 @@ strnames = {'1', 'pt1', 'pt01', 'pt25', 'pt5', 'pt75'};
 %analyze winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)
 
-unilat='1';
+filt_winner = winner2;
 
-filter_winner = ['_highpass_' unilat];
+filter_winner = ['_highpass_' filt_winner];
 
 %% Remove Line noise
 
