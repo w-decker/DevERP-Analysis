@@ -14,7 +14,7 @@ a4 = [a(13), a(16)];
 a5 = [a(17), a(20)];
 
 params = {a1, a2, a3, a4, a5};
-paramstr = {'_a1', '_a2', '_a3', '_a4', '_a5'};
+paramstr = {'_a1', '_a2', '_a3', '_a4', '_a5', '_man'};
 %%%%%%%%%%%%%%%%%%%%%%%
 
 numparams = length(params);

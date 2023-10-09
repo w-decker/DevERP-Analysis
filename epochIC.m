@@ -5,7 +5,7 @@ com = ''
 
 %%%% DO NOT CHANGE %%%%
 thresholds = {[0.5 0.9], [0.5 1], [0.7 0.9], [0.7 1]};
-tstrings = {'_59', '_51', '_79', '_71' };
+tstrings = {'_59', '_51', '_79', '_71', '_man' };
 %%%%%%%%%%%%%%%%%%%%%%%
 
 numparams = length(thresholds);
