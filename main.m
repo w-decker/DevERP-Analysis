@@ -12,6 +12,7 @@
 % display prompt
     display = questdlg(["Thanks for working on this analysis!";
     "Before you begin, please look at the preprocessing manual, found in the server.";
+    "By clicking MANUAL, you will open up the preprocessing manual for this project";
     "By clicking OK, the rest of the code will begin running."], 'MANUAL', 'MANUAL', 'OK', 'Default');
 
     % navigate user to help/documentation
@@ -19,7 +20,6 @@
         web('/Volumes/lendlab/projects/DevERP/analysis/preprocessing/preprocessing.html')
     end
     
-
 %% Initialize directories
 
 sys = system('env'); % use if needed
