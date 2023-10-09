@@ -1,11 +1,24 @@
 %% DevERP Analysis Script
 % Author: Will Decker
 
-% TO DO:
-% - look at the ERPLAB DQ scripts on OSF and get custom RMS(aSME) values
-% during grandaveraging! 
-% - Write script to calculate min absolute difference for RMS(aSME) scores
-% for each preprocessing step...i.e., GET THE WINNERS!
+% TO GET STARTED PRESS "RUN TO END"
+
+%% DevERP SME analysis startup
+
+% uiwait(msgbox(["Thanks for working on this analysis!";
+%     "Before you begin, please look at the preprocessing manual, found in the server.";
+%     "By clicking OK, the rest of the code will begin running."], 'STARTUP', 'help'))
+
+% display prompt
+    display = questdlg(["Thanks for working on this analysis!";
+    "Before you begin, please look at the preprocessing manual, found in the server.";
+    "By clicking OK, the rest of the code will begin running."], 'MANUAL', 'MANUAL', 'OK', 'Default');
+
+    % navigate user to help/documentation
+    if strcmp(display, 'MANUAL')
+        web('/Volumes/lendlab/projects/DevERP/analysis/preprocessing/preprocessing.html')
+    end
+    
 
 %% Initialize directories
 
@@ -286,14 +299,22 @@ for i = 1:numparams
     end
 end
 
+%% Stop run
+uiwait(msgbox(["It is now your job to manually inspect electrodes and interpolate the bad ones.";"When you click OK, the code will stop and you must follow the instructions provided in the preprocessing manual."], 'INTERPOLATE', 'help'))
+disp('Pausing so you can do task')
+return
+
+% To start up the sequence once more AFTER you have interpolated bad electrodes: Set your cursor into the net code chunk (Epoch clean_rawdata) and click Run to End
+
+
  %% Epoch clean_rawdata
 
 EEG = epochWrapper(EEG,ALLEEG, CURRENTSET, 'channelrej', subject_list, workdir, txtdir, erpdir);
 
 %% Make ERP List for clean_rawdata
 
-paramstr = {'_a1', '_a2', '_a3', '_a4', '_a5'};
-erpnames = {'a1_crd_erplist.txt', 'a2_crd_erplist.txt', 'a3_crd_erplist.txt', 'a4_crd_erplist.txt', 'a5_crd_erplist.txt'};
+paramstr = {'_a1', '_a2', '_a3', '_a4', '_a5', '_man'};
+erpnames = {'a1_crd_erplist.txt', 'a2_crd_erplist.txt', 'a3_crd_erplist.txt', 'a4_crd_erplist.txt', 'a5_crd_erplist.txt', 'man_crd_erplist.txt'};
 
 numparams = length(paramstr);
 numsubjects = length(subject_list);
@@ -312,8 +333,8 @@ end
 
 %% Analyze SME for clean_rawdata
 
-strnames = {'_a1_crd', '_a2_crd', '_a3_crd', '_a4_crd', '_a5_crd'};
-erpnames = {'a1_crd_erplist.txt', 'a2_crd_erplist.txt', 'a3_crd_erplist.txt', 'a4_crd_erplist.txt', 'a5_crd_erplist.txt'};
+strnames = {'_a1_crd', '_a2_crd', '_a3_crd', '_a4_crd', '_a5_crd', '_man_crd'};
+erpnames = {'a1_crd_erplist.txt', 'a2_crd_erplist.txt', 'a3_crd_erplist.txt', 'a4_crd_erplist.txt', 'a5_crd_erplist.txt', 'man_crd_erplist.txt'};
 
 % get winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)         
@@ -380,7 +401,7 @@ for j = 1:numparams
     fclose(fileID);
 end
 
-%% Analyze SME for clean_rawdata
+%% Analyze SME for ASR
 
 % need
 strnames = {'_a1', '_a2', '_a3', '_a4', '_a5'};
@@ -454,14 +475,28 @@ for i=1:numparams
 
 end
 
+%% Stop run
+error(['You must now manually inspect the data and remove artifacts.\n' ...
+    'For instructions on how do do this. Please see ...\n' ...
+    'To start up the sequence once more AFTER you have removed artifacts:\n' ...
+    'Set your cursor into the net code chunk (Epoch IC Label) and click Run to End'])
+
+%% Stop run
+uiwait(msgbox(["It is now your job to manually identify and remove artifacts.";"When you click OK, the code will stop and you must follow the instructions provided in the preprocessing manual."], 'REMOVE ARTIFACTS', 'help'))
+disp('Pausing so you can do task')
+return
+
+% To start up the sequence once more AFTER you have removed artifacts: Set your cursor into the net code chunk (Epoch IC Label) and click Run to End
+
+
 %% Epoch IC Label
 
 EEG = epochWrapper(EEG,ALLEEG, CURRENTSET, 'ic', subject_list, workdir, txtdir, erpdir);
 
 %% Make ERP list for IC Label
 
-tstrings = {'_59', '_51', '_79', '_71' };
-erpnames = {'59_ic_erplist.txt', '51_ic_erplist.txt', '79_ic_erplist.txt', '71_ic_erplist.txt'};
+tstrings = {'_59', '_51', '_79', '_71', '_man' };
+erpnames = {'59_ic_erplist.txt', '51_ic_erplist.txt', '79_ic_erplist.txt', '71_ic_erplist.txt', 'man_ic_erplist.txt'};
 
 numparams = length(tstrings);
 numsubjects = length(subject_list);
@@ -479,8 +514,8 @@ end
 %% Analyze SME for IC Label
 
 % need
-strnames = {'_59', '_51', '_79', '_71' };
-erpnames = {'59_ic_erplist.txt', '51_ic_erplist.txt', '79_ic_erplist.txt', '71_ic_erplist.txt'};
+strnames = {'_59', '_51', '_79', '_71', '_man' };
+erpnames = {'59_ic_erplist.txt', '51_ic_erplist.txt', '79_ic_erplist.txt', '71_ic_erplist.txt', 'man_ic_erplist.txt'};
 
 % get winner
 analyzeSME2(ALLERP, erpnames, strnames, txtdir, erpdir)  
@@ -490,7 +525,8 @@ ic_winner = winner2 ;
 %% Getting significant ERPs with tmax()
 
 % read in data
-data = readtext([txtdir filesep '51_ic_erplist.txt']);
+p = split(ic_winner, '_')
+data = readtext([txtdir filesep [p{2} '_ic_erplist.txt']]);
 
 % make GND variable
 GND = erplab2GND(data, 'out_fname', [erpdir filesep 'tmax.GND']); 
