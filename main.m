@@ -19,16 +19,18 @@
     if strcmp(display, 'MANUAL')
         web('/Volumes/lendlab/projects/DevERP/analysis/preprocessing/preprocessing.html')
     end
+
+task = 'sequence_learning';
     
 %% Initialize directories
 
 sys = system('env'); % use if needed
 user = getenv('USER'); % use if needed
 
-rawdir = '/Volumes/lendlab/projects/DevERP/analysis/symbol_search_SME/rawdir'; % should contain .set files. If not, see 'checkeventcodes.m'
-workdir = '/Volumes/lendlab/projects/DevERP/analysis/symbol_search_SME/workdir';
-txtdir = '/Volumes/lendlab/projects/DevERP/analysis/symbol_search_SME/txtdir';
-erpdir = '/Volumes/lendlab/projects/DevERP/analysis/symbol_search_SME/erpdir';
+rawdir = '/Volumes/lendlab/projects/DevERP/analysis/sequence_learning/rawdir'; % should contain .set files. If not, see 'checkeventcodes.m'
+workdir = '/Volumes/lendlab/projects/DevERP/analysis/sequence_learning/workdir';
+txtdir = '/Volumes/lendlab/projects/DevERP/analysis/sequence_learning/txtdir';
+erpdir = '/Volumes/lendlab/projects/DevERP/analysis/sequence_learning/erpdir';
 
 %% Load in subject list
 % See https://github.com/w-decker/DevERP-Simplified/wiki/Additional-Resources for creating this subject lists
@@ -38,11 +40,11 @@ subject_list = cellfun(@(x) string(x), T(:, 2)); % changes values in cell to str
 
 %% Rename files
 
-for i=1:length(T)
-    eeglab nogui
-    EEG = pop_loadset([T{i, 1} '.set'], rawdir);
-    EEG = pop_saveset(EEG, [workdir filesep [T{i, 2} '.set']]);
-end
+% for i=1:length(T)
+%     eeglab nogui
+%     EEG = pop_loadset([T{i, 1} '.set'], rawdir);
+%     EEG = pop_saveset(EEG, [workdir filesep [T{i, 2} '.set']]);
+% end
 
  %% Remove unnecessary channels
 
