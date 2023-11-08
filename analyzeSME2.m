@@ -74,11 +74,14 @@ assignin('base', 'SME', SME)
 winner2 = winner;
 assignin('base', 'winner2', winner2)
 
-if evalin('base', ('exits("smeoutput", "var")'))
-    evalin('base', 'smeoutput', smeoutput);
-    fieldlen = length(fieldnames(smeoutput));
-    smeoutput(fieldlen)
-elseif evalin('base', ('~exist("smeoutput, "var")'))
+if evalin('base', ('exist("smeoutput", "var")'))
+    try
+        evalin('base', "smeoutput", smeoutput);
+        fieldlen = length(fieldnames(smeoutput));
+        smeoutput(fieldlen)
+    catch
+    end
+elseif evalin('base', ('~exist("smeoutput", "var")'))
     smeoutput = struct();
     smeoutput(1).winner = '';
     assignin('base', 'smeoutput', smeoutput)
